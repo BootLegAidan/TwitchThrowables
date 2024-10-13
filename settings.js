@@ -3,8 +3,10 @@ const oauthToken = '' // Your twitch Oauth Token
 const redemptionName = 'Throwable' // Replace with the channel point reward for the throwables
 
 /*
-    colorable       will add a random color to the object when it is thrown
-    directionBased  will flip the image relative to the velocity
+    colorable       will add a random color to the object when it is thrown     default is false
+    directionBased  will flip the image relative to the velocity                default is false
+    stickToBottom   makes the throwable glued to the bottom at all times        default is false
+    rotate          makes the image rotate                                      default is true
 */
 const imgs = [
     {img:"banana.png"},

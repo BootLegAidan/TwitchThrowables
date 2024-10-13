@@ -20,7 +20,7 @@ function createThrowable(imageNum) {
     if (throwableProperties.colorable) {
         img.style.filter = `hue-rotate(${Math.random() * 360}deg)`
     }
-    img.onload = ()=>{
+    // img.onload = ()=>{
         throwableList.push({
             el: img,
             dir: direction,
@@ -28,9 +28,12 @@ function createThrowable(imageNum) {
             vel: vel,
             rot: 0,
             rotSpd: (Math.random() * 10) - 5,
-            directionBased: !!throwableProperties.directionBased
+            directionBased: !!throwableProperties.directionBased,
+            bottom: throwableProperties.bottom,
+            size: throwableProperties.size,
+            rotationEnabled: throwableProperties.rotate
         })
-    }
+    // }
 }
 
 function mainLoop() {
@@ -44,24 +47,30 @@ function mainLoop() {
         if (( // remove if touching the left or right
             i.dir == 1 && i.pos.x > window.innerWidth
         ) || (
-            i.dir == -1 && i.pos.x < -throwableProperties.size
+            i.dir == -1 && i.pos.x < -i.size
         )) {
             i.el.remove(); // Remove the DOM element
             return false;  // Return false to remove from the array
         }
 
         // Handle Y position
-        i.el.style.top = i.pos.y + 'px'
-        i.pos.y += i.vel.y * delta
-        i.vel.y += (gravity / 10) * delta
-        if (i.pos.y + throwableProperties.size > window.innerHeight) { // Bounce if touching the bottom
-            i.vel.y *= -bounce
-            i.pos.y = (window.innerHeight-throwableProperties.size) - 10
-            i.rotSpd += (i.vel.x / 10)
+        if (!i.bottom) {
+            i.pos.y += i.vel.y * delta
+            i.vel.y += (gravity / 10) * delta
+            if (i.pos.y + i.size > window.innerHeight) { // Bounce if touching the bottom
+                i.vel.y *= -bounce
+                i.pos.y = (window.innerHeight-i.size) - 10
+                i.rotSpd += (i.vel.x / 10)
+            }
+        } else {
+            i.pos.y = window.innerHeight - i.size
         }
+        i.el.style.top = i.pos.y + 'px'
 
         // Handle rotation
-        i.rot += i.rotSpd * delta
+        if (i.rotationEnabled) {
+            i.rot += i.rotSpd * delta
+        }
         
         i.el.style.transform = `rotate(${i.rot}deg) ${(i.directionBased ? `scaleX(${i.dir})` : "")}`
 
@@ -72,8 +81,6 @@ function mainLoop() {
     setTimeout(mainLoop, 1000/frameRate);
 }
 mainLoop()
-for (let i = 0; i < 25; i++){
-    createThrowable()
-}
+
 
 // setInterval(createImage, 100);

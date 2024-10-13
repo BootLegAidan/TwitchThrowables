@@ -7,13 +7,16 @@ function getImage(imageNum) {
     if (imageNum == undefined || imageNum >= imgs.length) {
         imageNum = Math.floor(imgs.length*Math.random())
     }
+    let imgProps = imgs[imageNum]
     let image = new Image()
     image.src = "./images/"+imgs[imageNum].img+""
     let returnVal =  {
         el: image, 
-        colorable: imgs[imageNum].colorable, 
-        directionBased: imgs[imageNum].directionBased,
-        size: (imgs[imageNum].size || imgSize)
+        colorable: imgProps.colorable, 
+        directionBased: imgProps.directionBased,
+        size: (imgProps.size || imgSize),
+        bottom: imgProps.stickToBottom,
+        rotate: (imgProps.rotate !== undefined && imgProps.rotate === false) ? false : true
     }
     return returnVal
 }
