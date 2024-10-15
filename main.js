@@ -14,8 +14,8 @@ function createThrowable(imageNum) {
         y: Math.random() * (window.innerHeight - throwableProperties.size)
     }
     let vel = {
-        x: ((Math.random()*10)+3) * direction,
-        y: (Math.random() * 10) - 5
+        x: ((Math.random()*(maxXV-minXV))+minXV) * direction,
+        y: ((Math.random()*(maxYV-minYV))+minYV)
     }
     if (throwableProperties.colorable) {
         img.style.filter = `hue-rotate(${Math.random() * 360}deg)`
@@ -31,7 +31,9 @@ function createThrowable(imageNum) {
             directionBased: !!throwableProperties.directionBased,
             bottom: throwableProperties.bottom,
             size: throwableProperties.size,
-            rotationEnabled: throwableProperties.rotate
+            rotationEnabled: throwableProperties.rotate,
+            ceiling: throwableProperties.ceiling,
+            gravity: throwableProperties.gravity
         })
     // }
 }
@@ -56,10 +58,15 @@ function mainLoop() {
         // Handle Y position
         if (!i.bottom) {
             i.pos.y += i.vel.y * delta
-            i.vel.y += (gravity / 10) * delta
-            if (i.pos.y + i.size > window.innerHeight) { // Bounce if touching the bottom
+            i.vel.y += (i.gravity / 10) * delta
+            if (i.pos.y + i.size >= window.innerHeight) { // Bounce if touching the bottom
                 i.vel.y *= -bounce
-                i.pos.y = (window.innerHeight-i.size) - 10
+                i.pos.y = (window.innerHeight-i.size)
+                i.rotSpd += (i.vel.x / 10)
+            }
+            if (i.ceiling && i.pos.y <= 0) { // Bounce if touching the bottom
+                i.vel.y *= -bounce
+                i.pos.y = 0
                 i.rotSpd += (i.vel.x / 10)
             }
         } else {
@@ -70,6 +77,7 @@ function mainLoop() {
         // Handle rotation
         if (i.rotationEnabled) {
             i.rot += i.rotSpd * delta
+            i.rot = i.rot % 360
         }
         
         i.el.style.transform = `rotate(${i.rot}deg) ${(i.directionBased ? `scaleX(${i.dir})` : "")}`

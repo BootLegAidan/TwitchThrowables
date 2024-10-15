@@ -16,7 +16,9 @@ function getImage(imageNum) {
         directionBased: imgProps.directionBased,
         size: (imgProps.size || imgSize),
         bottom: imgProps.stickToBottom,
-        rotate: (imgProps.rotate !== undefined && imgProps.rotate === false) ? false : true
+        rotate: (imgProps.rotate !== undefined && imgProps.rotate === false) ? false : true,
+        ceiling: imgProps.ceiling,
+        gravity: (imgProps.gravity == undefined ? defGravity : imgProps.gravity)
     }
     return returnVal
 }
